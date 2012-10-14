@@ -1,0 +1,49 @@
+.fmd			{width:102px; padding:3px; text-align:center; height:102px; overflow:hidden; margin:5px; float:left; cursor:pointer; }
+.fmname			{display:block; padding-top:5px; font-size:10px; font-family:Arial, Helvetica, sans-serif}
+.fmi			{width:102px; padding:3px; text-align:center; height:102px; background:#F4F4F4; background-image:url(img/imgholder.png); cursor:pointer; background-repeat:no-repeat; overflow:hidden; margin:5px; float:left}
+.fmimg			{border:1px solid #EAEAD5; padding:2px; background:#FFF; max-width:78px; max-height:78px}
+.fmname			{display:block; padding-top:5px; font-size:10px; font-family:Arial, Helvetica, sans-serif}
+#toolbar		{height:26px; background:#D3D3D3; margin-top:10px; margin-right:5px; margin-left:5px}
+#toolbar img	{cursor:pointer}
+#holderbox		{overflow-y:auto; top:30px; overflow-y:auto; margin-top:10px; position:absolute}
+.input			{font-family:Verdana; font-size:11px;}
+.fmselect		{color:#069; background-image:url(img/imgholder2.png);}
+
+/* slider */
+.fmslider			{position:absolute; z-index:1001; width:100%; display:none}
+.fmslidersdow		{background-image:url(img/sliderbtmbg.png); background-position:top;}
+.fmsliderlft		{background-image:url(img/sliderleft.png);}
+.sliderright		{background-image:url(img/sliderright.png);}
+.fmslidemid			{padding:10px; background:#EDEBE6; background-image:url(img/fmboxbg.gif); background-position:top; background-repeat:repeat-x}
+.fmslider form		{display:inline; padding:0px; margin:0px}
+.closebtn			{background-image:url(img/closebtn.gif); cursor:pointer; width:19px; height:18px; background-position:top; background-color: transparent; margin:0px; vertical-align: middle; padding-right:5px; padding-left:0px; padding-top:0px; padding-bottom:0px; border:0px;}
+.closebtn:hover		{background-image:url(img/closebtn1.gif)}
+.buttonblu			{font-family:Verdana, Geneva, sans-serif; cursor:pointer; color:#FFF; font-weight:bold; font-size:11px; width:100px !important; background-image:url(img/blubtnbg.gif); background-position:top; background-color: transparent; margin:0px; vertical-align: middle; padding-right:5px; padding-left:0px; padding-top:0px; padding-bottom:0px; border:0px; height:18px}
+.buttonblu:hover	{background-image:url(img/blubtnbg1.gif);}
+
+/* file manager : bubble */
+.fmbubble			{background-image:url(img/buble.png); display:none; background-repeat:no-repeat; width:235px; height:108px; z-index:1002; position:absolute;}
+.fmbubRight			{background-image:url(img/buble_rite.png);}
+.fmbubclose			{padding:3px; cursor:pointer; top:0px; position:absolute; right:0px}
+#fmbubinfo			{padding-left:20px; color:#999; position:absolute; bottom:5px}
+#fmbubimg			{padding-left:20px; padding-top:10px}
+.fmbubRight	.fmbubclose	{ margin-right:10px}
+
+.fmbubbig			{width:58px; height:38px; cursor:pointer; display:none; margin-right:10px; }
+.fmbublg			{background:url(img/large.png)}
+.fmbubmid			{width:46px; height:30px; cursor:pointer; display:none; margin-right:10px; background:url(img/mid.png)}
+.fmbubsm			{width:36px; height:23px; cursor:pointer; display:none; margin-right:10px; background:url(img/small.png)}
+.fmbubdw			{background:url(img/download.png)}
+.fmbubem			{background:url(img/embad.png)}
+.fmbubexe			{background:url(img/execute.png)}
+.fmbubcode			{background:url(img/code.png)}
+.fmbublg:hover		{background:url(img/large_o.png)}
+.fmbubmid:hover		{background:url(img/mid_o.png)}
+.fmbubsm:hover		{background:url(img/small_o.png)}
+.fmbubdw:hover		{background:url(img/download_o.png)}
+.fmbubem:hover		{background:url(img/embad_o.png)}
+.fmbubexe:hover		{background:url(img/execute_o.png)}
+.fmbubcode:hover	{background:url(img/code_o.png)}
+#fmbubhint			{padding-left:25px; padding-top:5px; color:#FFF}
+#fmbubinfo a		{color:#999;}
+#fmbubinfo a:hover	{color:#CCC;}

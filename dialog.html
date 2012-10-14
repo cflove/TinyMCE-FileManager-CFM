@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "htcf://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="htcf://www.w3.org/1999/xhtml">
+<head>
+<title>My Files</title>
+<script type="text/javascript" src="../../tiny_mce_popup.js"></script>
+<script type="text/javascript" src="js/dialog.js"></script>
+<script type="text/javascript" src="jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="jquery/jquery-ui-1.8.custom.min.js"></script>
+<link rel="stylesheet" type="text/css" href="jquery/css/pepper-grinder/jquery-ui-1.8.custom.css"/>
+<link rel="stylesheet" type="text/css" href="style.css"/>
+
+<script type="text/javascript">
+filemanagerpath = 'filemanager.cfc'
+
+function getfiles() {
+    $('.fmbubble:visible').css('display', 'none');
+    $('.fmslider:visible').find('.fmblose').trigger('click'); // close any open sliders
+    if ($('#path').val().split("/").length > 1) {
+        $('#moveup').css('display', 'inline')
+    } else {
+        $('#moveup').css('display', 'none')
+    };
+    $.ajax({
+        url: filemanagerpath + "?method=getfmfiles&returnformat=plain&path=" + $('#path').val(),
+        dataType: "text",
+        cache: false,
+        success: function (data) {
+            $('#holderbox').html(data);
+            //<!--- get path from the hidden input field, format it and display in the title --->	
+            $('.mceTop span:first', window.parent.document).css('cursor', 'pointer').html('<strong>' + $('#path').val().replace(/\//g, '</strong><strong>/') + '</strong>')
+        }
+    })
+};
+$(function () {
+    getfiles();
+    $('#holderbox').height($(window).height() - 40);
+    //<!--- click on bread crumb      --->
+    $('.mceTop span strong', window.parent.document).live('click', function () {
+        var i = $(this).index() + 1;
+        $('#path').val($('#path').val().split("/").slice(0, i).join('/'));
+        getfiles()
+    });
+    //<!--- move up             --->
+    $('#moveup').click(function () {
+        var i = $('.mceTop span strong', window.parent.document).length - 2;
+        $('.mceTop span strong:eq(' + i + ')', window.parent.document).trigger('click')
+    });
+    //<!--- sliders             --->
+    $('.fmtabslink').click(function () {
+        $('.fmbubble:visible .fmbubclose').trigger('click');
+        var i = $(this).attr('id') + 'box';
+        if ($('.fmslider:visible').attr('id') == $('#' + i).attr('id')) {
+            $('.fmslider:visible').hide('slide', {
+                direction: "up"
+            }, 800)
+        } else {
+            if ($('.fmslider:visible').length) {
+                $('.fmslider:visible').hide('slide', {
+                    direction: "up"
+                }, 800, function () {
+                    $('#' + i).show('slide', {
+                        direction: "up"
+                    }, 800)
+                })
+            } else {
+                $('#' + i).show('slide', {
+                    direction: "up"
+                }, 800)
+            }
+        }
+    });
+    //<!--- upload              --->
+    $('#fmuploadform').submit(function () {
+        if ($('#fmfile').val() == '') {
+            alert("Please Select File");
+            return false;
+        } else {
+            $(this).parent().find('.fmstates').html('<img src="img/loading.gif" align="absmiddle">');
+            $(this).parent().find('input[name="path"]').val($('#path').val())
+        }
+    });
+    //<!--- new folder          --->
+    $('#fmdirbox').submit(function () {
+        if ($(this).find('input[name="folder"]').val() == '') {
+            alert('Please Enter Folder Name');
+            return false;
+        } else {
+            $(this).parent().find('input[name="path"]').val($('#path').val())
+        }
+    });
+    //<!--- click on folder     --->
+    $('.fmd').live('click', function () {
+        $('#path').val($('#path').val() + '/' + $(this).text());
+        getfiles()
+    });
+    //<!---  click on item      --->
+    $('.fmi').live('click', function () {
+        $('.fmselect').removeClass('fmselect');
+        $(this).addClass('fmselect');
+        $('#fmbubimg span').css('display', 'none');
+        $('#fmbubinfo span:eq(1)').html('Download');
+        switch ($(this).children('img').attr('class')) {
+        case 'fmimg':
+            //image
+            $('.fmbublg').css('display', 'inline-block');
+            if ($(this).children('img').attr('data-thumb') == 'Yes') $('.fmbubsm').css('display', 'inline-block');
+            if ($(this).children('img').attr('data-midle') == 'Yes') $('.fmbubmid').css('display', 'inline-block');
+            break;
+        default:
+            //file
+            var ext = $(this).text().split('.');
+            ext = ext[ext.length - 1];
+            // different file types have different options
+            switch (ext.toLowerCase()) {
+			case 'swf':
+            case 'pdf':
+			case 'mov':
+			case 'wmv':
+			case 'mp3':
+			case 'ogg':
+                $('.fmbubdw,.fmbubem').css('display', 'inline-block');
+                break;
+// if you want to enable follwing file types and code embed functions, you have to handle them in the form action page since there are not default/single HTML tag to handle them.
+// You have to edit the TinyMCE Theme content.css to display those <span> tags nicely within the editor.
+//            case 'html':
+//            case 'js':
+//            case 'css':
+//                $('.fmbubdw,.fmbubcode').css('display', 'inline-block');
+//            case 'php':
+//                $('.fmbubcode').css('display', 'inline-block');
+//                $('#fmbubinfo span:eq(1)').empty() // no downloading
+//                break;
+//            case 'cfm':
+//            case 'cfc':
+//                $('.fmbubcode').css('display', 'inline-block');
+//                $('#fmbubinfo span:eq(1)').empty() // no downloading
+                break;
+            default:
+                $('.fmbubdw').css('display', 'inline-block');
+            }
+        }
+        $('#fmbubinfo span:first-child').html($(this).attr('data-size'));
+        $('#fmbubinfo span:eq(1):not(:empty)').html('. <a target="_blank" href="' + $(this).children('img').attr('data-wh') + $(this).children('img').attr('data-file') + '">Download</a>');
+        // show the bubble
+        if ($(window).width() - $(this).offset().left > 300) {
+            $('.fmbubble').removeClass('fmbubRight').css({
+                'right': 'auto',
+                'left': $(this).position().left + 11 + $(this).width(),
+                'top': $(this).position().top + 45
+            }).show('blind', {
+                direction: "horizontal"
+            }, 500)
+        } else {
+            $('.fmbubble').addClass('fmbubRight').css({
+                'left': 'auto',
+                'right': $(window).width() - $(this).position().left - 5,
+                'top': $(this).position().top + 45
+            }).show('blind', {
+                direction: "horizontal"
+            }, 500)
+        }
+    });
+    //<!--- bubble window stuff --->
+    $('#fmbubimg span').hover(function () {
+        $('#fmbubhint').html('&bull; ' + $(this).attr('data-hint'))
+    }, function () {
+        $('#fmbubhint').html('')
+    });
+    //<!--- insert small img    --->
+    $('.fmbubsm').click(function () {
+        tinyMCEPopup.restoreSelection();
+        tinyMCEPopup.editor.focus();
+        tinyMCEPopup.editor.execCommand('mceInsertContent', false, '<a class="thumbnail" href="' + $('.fmselect').children('img').attr('src').replace("/_thumb/", "/") + '" target="_blank"><img src="' + $('.fmselect').children('img').attr('src') + '" /></a>');
+        tinyMCEPopup.close() 
+    });
+    //<!--- insert medium img   --->
+    $('.fmbubmid').click(function () {
+        tinyMCEPopup.restoreSelection();
+        tinyMCEPopup.editor.focus();
+        tinyMCEPopup.editor.execCommand('mceInsertContent', false, '<a class="mediumimage " href="' + $('.fmselect').children('img').attr('src').replace("/_thumb/", "/") + '" target="_blank"><img src="' + $('.fmselect').children('img').attr('src').replace("/_thumb/", "/_middle/") + '" /></a>');
+        tinyMCEPopup.close() 
+    });
+    //<!--- insert full img     --->
+    $('.fmbublg').click(function () {
+        tinyMCEPopup.restoreSelection();
+        tinyMCEPopup.editor.focus();
+        tinyMCEPopup.editor.execCommand('mceInsertContent', false, '<img src="' + $('.fmselect').children('img').attr('src').replace("/_thumb/", "/") + '" class="largeimage" />');
+        tinyMCEPopup.close() 
+    });
+    //<!--- embad file          --->
+    $('.fmbubem').click(function () {
+        tinyMCEPopup.restoreSelection();
+        tinyMCEPopup.editor.focus();
+        var file = $('.fmselect').children('img').attr('data-wh') + $('.fmselect').children('img').attr('data-file')
+        var ext = file.split('.');
+        ext = ext[ext.length - 1];
+        switch (ext.toLowerCase()) {
+        case 'pdf':
+            tinyMCEPopup.editor.execCommand('mceInsertContent', false, '<iframe style="height:500px" src ="' + file + '" width="100%" class="innerimg"></iframe>');
+            break;
+		case 'swf':
+            tinyMCEPopup.editor.execCommand('mceInsertContent', false, '<object width="320" height="240" data="http://cflove.org/examples/filemanager/UserFiles/Untitled-1.swf" type="application/x-shockwave-flash"><param name="src" value="'+file+'" /></object><br>');
+            break;
+		case 'mov':
+            tinyMCEPopup.editor.execCommand('mceInsertContent', false, '<object width="320" height="240" data="'+file+'" type="video/quicktime"><param name="src" value="'+file+'" /></object><br>');
+            break;
+		case 'wmv':
+            tinyMCEPopup.editor.execCommand('mceInsertContent', false, '<object width="320" height="240" data="'+file+'" type="application/x-mplayer2"><param name="url" value="'+file+'" /></object><br>');
+            break;
+		case 'mp3':
+		case 'ogg':
+            tinyMCEPopup.editor.execCommand('mceInsertContent', false, '<audio controls="controls"><source src="'+file+' " type="audio/mpeg" /></audio><br>');
+            break;
+        }
+        tinyMCEPopup.close();
+    });
+    //<!--- downoload link      --->
+    $('.fmbubdw').click(function () {
+        tinyMCEPopup.restoreSelection();
+        tinyMCEPopup.editor.focus();
+        tinyMCEPopup.editor.execCommand('mceInsertContent', false, '<a href="' + $('.fmselect').children('img').attr('data-wh') + $('.fmselect').children('img').attr('data-file') + '" target="_blank"> Download ' + $('.fmselect').text() + '</a>');
+        tinyMCEPopup.close() 
+    });
+    //<!--- Code Block          --->
+    $('.fmbubcode').click(function () {
+        tinyMCEPopup.restoreSelection();
+        tinyMCEPopup.editor.focus();
+        tinyMCEPopup.editor.execCommand('mceInsertContent', false, '<span class="cfmfile">' + $('.fmselect').children('img').attr('data-file') + '</span>');
+        tinyMCEPopup.close() 
+    })
+    //<!--- delete              --->
+    $('#fmbubinfo span:last-child a').click(function () {
+        var r = confirm("Are You Sure You Want to Delete This File Permanently?");
+        if (r) {
+            $.ajax({
+                url: filemanagerpath + "?method=delfmfiles&returnformat=plain&path=" + $('#path').val() + "/" + $('.fmselect').text(),
+                dataType: "text",
+                cache: false,
+                success: function (data) {
+                    $('.fmbubclose').click();
+                    $('.fmselect').hide("drop", {
+                        direction: "left"
+                    }, 1000);
+                }
+            })
+        }
+    });
+    //<!--- close bubble        --->
+    $('.fmbubble .fmbubclose').click(function () {
+        $('.fmbubble').hide('blind', {
+            direction: "horizontal"
+        }, 500, function () {
+            $('.fmselect').removeClass('fmselect')
+        })
+    })
+    //<!--- close sliders       --->
+    $('.fmblose').click(function () {
+        $(this).next('span').html('');
+        $('.fmslider:visible').hide('slide', {
+            direction: "up"
+        }, 800, function () {
+            $(this).find('form')[0].reset();
+        })
+    })
+});
+//<!--- retuns from iframe      --->
+function fmreturnhome() {
+    $('.fmstates:visible').empty();
+    getfiles()
+}
+</script>
+</head>
+<body style="padding:0px; margin:0px; background-color:#FFF">
+<!---- option buttons        ---->
+<div id="toolbar"><img src="img/lf.gif" align="absmiddle" style="float:left" />
+<img src="img/upload.gif" id="fmupload" class="fmtabslink" align="absmiddle" style="float:left" />
+<img src="img/newfolder.gif" id="fmdir" class="fmtabslink" align="absmiddle" style="float:left" />
+<img src="img/moveup.gif" id="moveup" class="fmtabslink" align="absmiddle" style="right:10px; position:absolute; display:none" />
+<img src="img/rt.gif" align="absmiddle" style="float:right" /></div>
+<!---- file upload box       ---->
+<table id="fmuploadbox" class="fmslider" cellpadding="0" cellspacing="0" border="0">
+<form id="fmuploadform" action="upload.cfm" target="fmtube" method="post" enctype="multipart/form-data">
+<tr><td width="20"></td><td class="fmsliderlft" valign="top"><img src="img/fmsliderlfttp.png" /></td>
+<td class="fmslidemid">
+	Upload File <input type="file" style="width:250px" name="file" id="fmfile" class="input" /> 
+	<input type="submit" class="buttonblu" value="Upload" /> &nbsp;
+	<input type="hidden" name="path" />
+	<input type="button" class="closebtn fmblose" value="" align="absmiddle" /> <span class="fmstates"></span>
+</td>
+<td class="sliderright" valign="top"><img src="img/fmsliderighttp.png" /></td><td width="20"></td></tr>
+<tr><td width="20"></td><td width="6"><img src="img/sliderbtlft.png"></td><td class="fmslidersdow"></td><td width="6"><img align="right" src="img/sliderbtrite.png"></td><td width="20"></td></tr>
+</form>
+</table>
+
+<!---- new folder box        ---->
+<table id="fmdirbox" class="fmslider"cellpadding="0" cellspacing="0" border="0">
+<form id="fmuploadform" action="folder.cfm" target="fmtube" method="post" enctype="multipart/form-data">
+<tr><td width="20"></td><td class="fmsliderlft" valign="top"><img src="img/fmsliderlfttp.png" /></td>
+<td class="fmslidemid">
+	New Folder <input type="text" style="width:150px" name="folder" class="input" /> 
+	<input type="submit" class="buttonblu" value="Create" /> &nbsp; 
+	<input type="button" class="closebtn fmblose" value="" />
+	<input type="hidden" name="path" />
+</td>
+<td class="sliderright" valign="top"><img src="img/fmsliderighttp.png" /></td><td width="20"></td></tr>
+<tr><td width="20"></td><td width="6"><img src="img/sliderbtlft.png"></td><td class="fmslidersdow"></td><td width="6"><img align="right" src="img/sliderbtrite.png"></td><td width="20"></td></tr>
+</form>
+</table>
+<div id="holderbox"></div>
+<!--- bubble                  --->
+<div class="fmbubble">
+<div id="fmbubimg"><span class="fmbubexe fmbubbig" data-hint="Execute Code Block"></span><span class="fmbubcode fmbubbig" data-hint="Insert to Code Block"></span><span class="fmbubdw fmbubbig" data-hint="Insert Download Link"></span><span class="fmbubem fmbubbig" data-hint="Embed to My Post"></span><span class="fmbublg fmbubbig" data-hint="Insert Full Size"></span><span class="fmbubmid" data-hint="Insert Medium Size"></span><span class="fmbubsm" data-hint="Insert Thumbnail Size"></span></div>
+<div id="fmbubhint"></div><div id="fmbubinfo"><span></span> <span></span> <span>. <a href="javascript:">Delete</a></span></div>
+<img class="fmbubclose" src="img/popclose.png" title="Close" /></div>
+</div>
+<!--- form submit go through this iframe                                            --->
+<iframe id="fmtube" name="fmtube" style="width:0px; height:0px; display:block; visibility:hidden"></iframe>
+<!--<iframe id="fmtube" name="fmtube" style="width:500px; height:100px; position:absolute; bottom:0px"></iframe>-->
+<!--- keep the path hidden in here saftly, & display this value in the popup title. --->
+<input type="text" id="path" value="My Files" style="display:none" />
+</body>
+</html>
