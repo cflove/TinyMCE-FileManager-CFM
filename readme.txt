@@ -2,7 +2,7 @@ For full setup instruction and a downloaderble demo, visit
 http://cflove.org/2012/09/coldfusion-file-manager-for-tinymce.cfm 
 
 Set up:
-Copy the filemanager folder into your tiny_mce/plugins folder, include the plugin and the button to your tinyMCE form. (Visit http://www.tinymce.com/wiki.php/Configuration:plugins for how to inlude a plugin in to TinyMCE)
+Copy the filemanager folder into your tiny_mce/plugins folder, include the plugin and the button to your tinyMCE form. (Visit http://www.tinymce.com/wiki.php/Configuration:plugins for how to inlude a plugin into TinyMCE)
 Ex:
 plugins : "filemanager,table,contextmenu,paste,[other plugins..]"
 theme_advanced_buttons1 : "filemanager,bold,italic,underline,[other buttons..]"
