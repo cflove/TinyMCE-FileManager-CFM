@@ -1,5 +1,5 @@
 <cfcomponent displayname ="filemanager" output ="yes">
-<cfprocessingdirective pageEncoding="utf-8">
+<cfprocessingdirective pageencoding="utf-8">
 
 <!--- ************************************************************************************ --->
 <!--- Add User Authentication here                                                         --->
@@ -69,13 +69,13 @@
 			</cfif>
 			<div class="fmi" data-size="#JSStringFormat(fncFileSize(this.getall.size))#">
 			<cfif YesNoFormat(local.thumb)>
-				<img class="fmimg" data-thumb="#local.thumb#" data-midle="#local.midle#" src="#settings.UserFilesURL##local.thumbpath##this.getall.name#">
+				<img data-wh="#JSStringFormat('#settings.UserFilesURL#')#" data-file="#JSStringFormat('#local.filepath##this.getall.name#')#" class="fmimg" data-thumb="#local.thumb#" data-midle="#local.midle#" src="#settings.UserFilesURL##local.thumbpath##this.getall.name#">
 			<cfelse>
 				<cfset local.fileext = listlast(this.getall.name,'.')>
 				<cfswitch expression="#local.fileext#">
 					<!--- No Thumb :: send the full image               --->
 					<cfcase value="jpg,jpeg,png,gif">
-						<img class="fmimg" data-midle="#local.midle#" src="#settings.UserFilesURL#/#local.filepath##this.getall.name#">
+						<img data-wh="#JSStringFormat('#settings.UserFilesURL#')#" data-file="#JSStringFormat('#local.filepath##this.getall.name#')#" class="fmimg" data-midle="#local.midle#" src="#settings.UserFilesURL#/#local.filepath##this.getall.name#">
 					</cfcase>
 					<!--- Not Images :: display icons base on file type --->
 					<cfcase value="css,swf,js,php,mp3,pdf,cfm,cfc,wav,zip,avi,mov,wmv,doc,docx,eps,flv,fla,ind,jsf,mpeg,ppt,pptx,proj,psd,pst,rar,txt,xls,xlsx">

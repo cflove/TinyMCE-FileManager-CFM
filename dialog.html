@@ -4,9 +4,9 @@
 <title>My Files</title>
 <script type="text/javascript" src="../../tiny_mce_popup.js"></script>
 <script type="text/javascript" src="js/dialog.js"></script>
-<script type="text/javascript" src="jquery/jquery-1.6.2.min.js"></script>
-<script type="text/javascript" src="jquery/jquery-ui-1.8.custom.min.js"></script>
-<link rel="stylesheet" type="text/css" href="jquery/css/pepper-grinder/jquery-ui-1.8.custom.css"/>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/pepper-grinder/jquery-ui.css"/>
 <link rel="stylesheet" type="text/css" href="style.css"/>
 
 <script type="text/javascript">
@@ -35,7 +35,7 @@ $(function () {
     getfiles();
     $('#holderbox').height($(window).height() - 40);
     //<!--- click on bread crumb      --->
-    $('.mceTop span strong', window.parent.document).live('click', function () {
+    $('.mceTop span', window.parent.document).on('click','strong', function () {
         var i = $(this).index() + 1;
         $('#path').val($('#path').val().split("/").slice(0, i).join('/'));
         getfiles()
@@ -89,12 +89,12 @@ $(function () {
         }
     });
     //<!--- click on folder     --->
-    $('.fmd').live('click', function () {
+   $('#holderbox').on('click','.fmd', function () {
         $('#path').val($('#path').val() + '/' + $(this).text());
         getfiles()
     });
     //<!---  click on item      --->
-    $('.fmi').live('click', function () {
+    $('#holderbox').on('click','.fmi', function () {
         $('.fmselect').removeClass('fmselect');
         $(this).addClass('fmselect');
         $('#fmbubimg span').css('display', 'none');
@@ -140,7 +140,7 @@ $(function () {
             }
         }
         $('#fmbubinfo span:first-child').html($(this).attr('data-size'));
-        $('#fmbubinfo span:eq(1):not(:empty)').html('. <a target="_blank" href="' + $(this).children('img').attr('data-wh') + $(this).children('img').attr('data-file') + '">Download</a>');
+		$('#fmbubinfo span:eq(1):not(:empty)').html('. <a target="_blank" href="'+$(this).children('img').attr('data-wh')+$(this).children('img').attr('data-file')+'">Download</a>')
         // show the bubble
         if ($(window).width() - $(this).offset().left > 300) {
             $('.fmbubble').removeClass('fmbubRight').css({
