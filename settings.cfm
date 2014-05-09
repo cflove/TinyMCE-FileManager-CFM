@@ -10,5 +10,5 @@
 <!--- Permision for linux               --->
 <cfset settings.chomd			= "777">
 <!--- disallowed file types             --->
-<cfset settings.disfiles		= "cfm,cfc,exe,php,asp">
+<cfset settings.disfiles		= "cfm,cfc,exe,php,asp,cfml">
 </cfsilent>
